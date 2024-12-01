@@ -1,6 +1,10 @@
-# Advent of Code Project Template
+# Advent of Code 2024
 
-A lightweight execution environment for the [advent of code](https://adventofcode.com/) challenges written in Go.
+A lightweight execution environment for the [Advent of Code](https://adventofcode.com/) challenges written in Go.
+
+<!--- advent_readme_stars table --->
+## 2024 Results
+<!--- advent_readme_stars table --->
 
 ## Get started
 
@@ -13,70 +17,12 @@ Make sure you have Go >= 1.21.4 installed.
 ### Clone the repository
 
 ```sh
-git clone https://github.com/wlchs/advent_of_code_go_template
+git clone https://github.com/wlchs/aoc24
 ```
 
-### Solving the daily challenges
+### Test the solutions
 
-I've generated a separate directory in the repository for each advent calendar day: from the 1st until the 25th. Additionally, the `day_0`
-directory contains a solution for the first challenge from last year's competition.
-
-To solve a daily challenge, navigate to the corresponding day and implement the solution. I've prepared two methods for each day, `Part1`
-and`Part2`, indicating that every challenge has two parts. The return value of the methods are always strings. The methods receive the input
-as a string slice, so you don't have to worry about reading anything from a file.
-
-The solution for the challenge of December 1, 2022, looks like this:
-
-```go
-
-// getElfCalories reads the input lines and returns a slice of calories for each elf
-func getElfCalories(input []string) []int {
-    var calories []int
-    currentElf := 0
-    for _, i := range input {
-        if i == "" {
-            calories = append(calories, currentElf)
-            currentElf = 0
-        } else {
-            cal, _ := strconv.Atoi(i)
-            currentElf += cal
-        }
-    }
-    calories = append(calories, currentElf)
-    sort.Slice(calories, func (i, j int) bool {
-        return calories[i] > calories[j]
-    })
-    return calories
-}
-
-// Part1 solves the first part of the exercise
-func Part1(input []string) string {
-    calories := getElfCalories(input)
-    maxCalories := calories[0]
-    return strconv.Itoa(maxCalories)
-}
-
-// Part2 solves the second part of the exercise
-func Part2(input []string) string {
-    calories := getElfCalories(input)
-
-    topCalories := 0
-    for _, i := range calories[:3] {
-        topCalories += i
-    }
-
-    return strconv.Itoa(topCalories)
-}
-
-```
-
-Additionally, I've prepared unit tests for each day to try the solutions with a template input. The text files in the directories contain
-the template input and output for both parts of the exercise. Paste the input to `input_test_x.txt` file and the expected solution
-to`solution_x.txt`.
-
-### Test your solution
-
-Before submitting a solution, you can test your algorithm with the template input. Navigate to the day you want to check and run the
+Before submitting a solution, you can test the algorithms with the template input. Navigate to the day you want to check and run the
 following command:
 
 ```sh
@@ -105,7 +51,7 @@ To run the solution, you need to provide a few extra arguments.
 And now the complete command:
 
 ```sh
-./advent_of_code_go_template --day x --input path_to_input --mode 1
+./aoc24 --day x --input path_to_input --mode 1
 # or
 go run . --day x --input path_to_input --mode 1
 ```

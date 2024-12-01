@@ -1,3 +1,3 @@
-module github.com/wlchs/advent_of_code_go_template
+module github.com/wlchs/aoc24
 
-go 1.21.4
+go 1.22

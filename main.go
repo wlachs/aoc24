@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/wlchs/advent_of_code_go_template/internal"
+	"github.com/wlchs/aoc24/internal"
 	"os"
 	"strconv"
 )
