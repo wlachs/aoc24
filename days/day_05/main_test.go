@@ -1,8 +1,8 @@
 package day_05_test
 
 import (
-	"github.com/wlchs/advent_of_code_go_template/days/day_05"
-	"github.com/wlchs/advent_of_code_go_template/internal"
+	"github.com/wlchs/aoc24/days/day_05"
+	"github.com/wlchs/aoc24/internal"
 	"testing"
 )
 
