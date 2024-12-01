@@ -42,5 +42,27 @@ func Part1(input []string) string {
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	list1 := make([]int, 0, len(input))
+	list2 := make([]int, 0, len(input))
+
+	for _, line := range input {
+		raw := strings.Split(line, "   ")
+		list1 = append(list1, utils.Atoi(raw[0]))
+		list2 = append(list2, utils.Atoi(raw[1]))
+	}
+
+	sum := 0
+	for _, i := range list1 {
+		count := 0
+
+		for _, j := range list2 {
+			if i == j {
+				count++
+			}
+		}
+
+		sum += i * count
+	}
+
+	return strconv.Itoa(sum)
 }
