@@ -18,24 +18,31 @@ func Run(input []string, mode int) {
 	}
 }
 
+// isValid validates a report
+func isValid(report []int) bool {
+	valid := true
+	sign := math.Signbit(float64(report[1] - report[0]))
+
+	for i := 1; i < len(report); i++ {
+		diff := report[i] - report[i-1]
+		absDiff := utils.Abs(diff)
+
+		if math.Signbit(float64(diff)) != sign || absDiff < 1 || absDiff > 3 {
+			valid = false
+		}
+	}
+
+	return valid
+}
+
 // Part1 solves the first part of the exercise
 func Part1(input []string) string {
 	count := 0
 
 	for _, report := range input {
-		valid := true
 		values := utils.ToIntSlice(strings.Split(report, " "))
-		sign := math.Signbit(float64(values[1] - values[0]))
-		for i := 1; i < len(values); i++ {
-			diff := values[i] - values[i-1]
-			absDiff := utils.Abs(diff)
 
-			if math.Signbit(float64(diff)) != sign || absDiff < 1 || absDiff > 3 {
-				valid = false
-			}
-		}
-
-		if valid {
+		if isValid(values) {
 			count++
 		}
 	}
@@ -45,5 +52,26 @@ func Part1(input []string) string {
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	count := 0
+
+	for _, report := range input {
+		values := utils.ToIntSlice(strings.Split(report, " "))
+
+		if isValid(values) {
+			count++
+		} else {
+			for i := range len(values) {
+				adjustedValues := make([]int, 0, len(values)-1)
+				adjustedValues = append(adjustedValues, values[:i]...)
+				adjustedValues = append(adjustedValues, values[i+1:]...)
+
+				if isValid(adjustedValues) {
+					count++
+					break
+				}
+			}
+		}
+	}
+
+	return strconv.Itoa(count)
 }
