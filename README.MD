@@ -9,6 +9,7 @@ A lightweight execution environment for the [Advent of Code](https://adventofcod
 | :---: | :---: | :---: |
 | [Day 1](https://adventofcode.com/2024/day/1) | ⭐ | ⭐ |
 | [Day 2](https://adventofcode.com/2024/day/2) | ⭐ | ⭐ |
+| [Day 3](https://adventofcode.com/2024/day/3) | ⭐ | ⭐ |
 <!--- advent_readme_stars table --->
 
 ## Get started
