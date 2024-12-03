@@ -10,12 +10,32 @@ import (
 
 // eval receives a row as input and evaluates the valid multiplications
 func eval(row string) int {
-	re := regexp.MustCompile("mul\\(\\d+,\\d+\\)")
+	re := regexp.MustCompile(`mul\(\d+,\d+\)`)
 	sum := 0
 	matches := re.FindAllString(row, -1)
 
 	for _, match := range matches {
 		sum += mul(match)
+	}
+
+	return sum
+}
+
+// evalAdvanced receives a row as input and evaluates the valid multiplications with additional switch logic
+func evalAdvanced(row string) int {
+	re := regexp.MustCompile(`mul\(\d+,\d+\)|do\(\)|don't\(\)`)
+	sum := 0
+	enabled := true
+	matches := re.FindAllString(row, -1)
+
+	for _, match := range matches {
+		if match == "do()" {
+			enabled = true
+		} else if match == "don't()" {
+			enabled = false
+		} else if enabled {
+			sum += mul(match)
+		}
 	}
 
 	return sum
@@ -50,5 +70,11 @@ func Part1(input []string) string {
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	joined := ""
+
+	for _, row := range input {
+		joined += row
+	}
+
+	return strconv.Itoa(evalAdvanced(joined))
 }
