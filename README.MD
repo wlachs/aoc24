@@ -17,7 +17,7 @@ In the following section, I'll show you how to set up and run the environment fo
 
 ### Prerequisites
 
-Make sure you have Go >= 1.21.4 installed.
+Make sure you have Go >= 1.22 installed.
 
 ### Clone the repository
 
