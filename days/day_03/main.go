@@ -2,7 +2,30 @@ package day_03
 
 import (
 	"fmt"
+	"github.com/wlchs/aoc24/utils"
+	"regexp"
+	"strconv"
+	"strings"
 )
+
+// eval receives a row as input and evaluates the valid multiplications
+func eval(row string) int {
+	re := regexp.MustCompile("mul\\(\\d+,\\d+\\)")
+	sum := 0
+	matches := re.FindAllString(row, -1)
+
+	for _, match := range matches {
+		sum += mul(match)
+	}
+
+	return sum
+}
+
+// mul receives a mul instruction and returns the multiplication result
+func mul(str string) int {
+	values := strings.Split(str[4:len(str)-1], ",")
+	return utils.Atoi(values[0]) * utils.Atoi(values[1])
+}
 
 // Run function of the daily challenge
 func Run(input []string, mode int) {
@@ -16,7 +39,13 @@ func Run(input []string, mode int) {
 
 // Part1 solves the first part of the exercise
 func Part1(input []string) string {
-	return ""
+	sum := 0
+
+	for _, row := range input {
+		sum += eval(row)
+	}
+
+	return strconv.Itoa(sum)
 }
 
 // Part2 solves the second part of the exercise
