@@ -56,5 +56,29 @@ func Part1(input []string) string {
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	m := utils.ParseInputToMap(input)
+	count := 0
+	dirs := []types.Vec2{
+		{X: 1, Y: 1},
+		{X: -1, Y: -1},
+	}
+
+	for y := range input {
+		for x := range input[y] {
+			head := types.Vec2{X: x, Y: y}
+
+			for _, dir := range dirs {
+
+				if search(m, head, "AS", dir) != 1 || search(m, head, "AM", dir.Multiply(-1)) != 1 {
+					continue
+				}
+
+				if (search(m, head, "AS", dir.RotateRight()) == 1 && search(m, head, "AM", dir.RotateRight().Multiply(-1)) == 1) || search(m, head, "AM", dir.RotateRight()) == 1 && search(m, head, "AS", dir.RotateRight().Multiply(-1)) == 1 {
+					count++
+				}
+			}
+		}
+	}
+
+	return strconv.Itoa(count)
 }
