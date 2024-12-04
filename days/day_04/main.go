@@ -68,7 +68,6 @@ func Part2(input []string) string {
 			head := types.Vec2{X: x, Y: y}
 
 			for _, dir := range dirs {
-
 				if search(m, head, "AS", dir) != 1 || search(m, head, "AM", dir.Multiply(-1)) != 1 {
 					continue
 				}
