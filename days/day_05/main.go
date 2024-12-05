@@ -9,6 +9,19 @@ import (
 	"strings"
 )
 
+// checkAndCorrectInput tests whether the input is valid and if not, tries to correct it
+func checkAndCorrectInput(values []int, constraints []types.Vec2) {
+	for y := 0; y < len(values); y++ {
+		for x := y + 1; x < len(values); x++ {
+			if slices.Contains(constraints, types.Vec2{X: values[x], Y: values[y]}) {
+				tmp := values[y]
+				values[y] = values[x]
+				values[x] = tmp
+			}
+		}
+	}
+}
+
 // Run function of the daily challenge
 func Run(input []string, mode int) {
 	if mode == 1 || mode == 3 {
@@ -32,18 +45,12 @@ func Part1(input []string) string {
 
 	for _, row := range input[emptyLineId+1:] {
 		values := utils.ToIntSlice(strings.Split(row, ","))
-		valid := true
+		clone := slices.Clone(values)
 
-		for i, second := range values {
-			for _, first := range values[i+1:] {
-				if slices.Contains(constraints, types.Vec2{X: first, Y: second}) {
-					valid = false
-				}
-			}
+		checkAndCorrectInput(clone, constraints)
 
-		}
-		if valid {
-			sum += values[(len(values)-1)/2]
+		if slices.Compare(values, clone) == 0 {
+			sum += clone[(len(clone)-1)/2]
 		}
 	}
 
@@ -52,5 +59,25 @@ func Part1(input []string) string {
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	emptyLineId := slices.Index(input, "")
+	constraints := make([]types.Vec2, 0, emptyLineId)
+	sum := 0
+
+	for _, row := range input[:emptyLineId] {
+		values := utils.ToIntSlice(strings.Split(row, "|"))
+		constraints = append(constraints, types.Vec2{X: values[0], Y: values[1]})
+	}
+
+	for _, row := range input[emptyLineId+1:] {
+		values := utils.ToIntSlice(strings.Split(row, ","))
+		clone := slices.Clone(values)
+
+		checkAndCorrectInput(clone, constraints)
+
+		if slices.Compare(values, clone) != 0 {
+			sum += clone[(len(clone)-1)/2]
+		}
+	}
+
+	return strconv.Itoa(sum)
 }
