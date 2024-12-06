@@ -12,6 +12,7 @@ A lightweight execution environment for the [Advent of Code](https://adventofcod
 | [Day 3](https://adventofcode.com/2024/day/3) | ⭐ | ⭐ |
 | [Day 4](https://adventofcode.com/2024/day/4) | ⭐ | ⭐ |
 | [Day 5](https://adventofcode.com/2024/day/5) | ⭐ | ⭐ |
+| [Day 6](https://adventofcode.com/2024/day/6) | ⭐ |   |
 <!--- advent_readme_stars table --->
 
 ## Get started
