@@ -65,5 +65,42 @@ func Part1(input []string) string {
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	disk := buildDiskMap(input[0])
+	checksum := 0
+	block := -1
+	blockLength := 0
+
+	for x := len(disk) - 1; x >= 0; x-- {
+		if disk[x] == block {
+			blockLength++
+		} else {
+			if block != -1 {
+				freeSpace := 0
+				for y := 0; y <= x; y++ {
+					if disk[y] == -1 {
+						freeSpace++
+					} else {
+						freeSpace = 0
+					}
+					if freeSpace == blockLength {
+						for z := range freeSpace {
+							disk[y-z], disk[x+z+1] = disk[x+z+1], disk[y-z]
+						}
+						break
+					}
+				}
+			}
+
+			block = disk[x]
+			blockLength = 1
+		}
+	}
+
+	for x, file := range disk {
+		if file != -1 {
+			checksum += x * file
+		}
+	}
+
+	return strconv.Itoa(checksum)
 }
