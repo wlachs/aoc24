@@ -28,6 +28,22 @@ func calculateScore(m map[types.Vec2]int32, vec types.Vec2) []types.Vec2 {
 	return score
 }
 
+// calculateDistinctScore calculates the distinct score of a trailhead starting from the given position
+func calculateDistinctScore(m map[types.Vec2]int32, vec types.Vec2) int {
+	if m[vec] == '9' {
+		return 1
+	}
+
+	score := 0
+	for _, nextVec := range vec.Around() {
+		if m[nextVec]-m[vec] == 1 {
+			score += calculateDistinctScore(m, nextVec)
+		}
+	}
+
+	return score
+}
+
 // Run function of the daily challenge
 func Run(input []string, mode int) {
 	if mode == 1 || mode == 3 {
@@ -54,5 +70,14 @@ func Part1(input []string) string {
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	m := utils.ParseInputToMap(input)
+	score := 0
+
+	for vec := range m {
+		if m[vec] == '0' {
+			score += calculateDistinctScore(m, vec)
+		}
+	}
+
+	return strconv.Itoa(score)
 }
