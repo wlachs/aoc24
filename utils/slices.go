@@ -11,6 +11,16 @@ func ToIntSlice(numbers []string) []int {
 	return s
 }
 
+// ToUInt64Slice converts a string slice to an uint64 slice
+func ToUInt64Slice(numbers []string) []uint64 {
+	s := make([]uint64, 0, len(numbers))
+	for _, number := range numbers {
+		i, _ := strconv.ParseUint(number, 10, 64)
+		s = append(s, i)
+	}
+	return s
+}
+
 // ToFloatSlice converts a string slice to a float64 slice
 func ToFloatSlice(numbers []string) []float64 {
 	s := make([]float64, 0, len(numbers))
