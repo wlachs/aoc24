@@ -17,6 +17,7 @@ A lightweight execution environment for the [Advent of Code](https://adventofcod
 | [Day 8](https://adventofcode.com/2024/day/8) | ⭐ | ⭐ |
 | [Day 9](https://adventofcode.com/2024/day/9) | ⭐ | ⭐ |
 | [Day 10](https://adventofcode.com/2024/day/10) | ⭐ | ⭐ |
+| [Day 11](https://adventofcode.com/2024/day/11) | ⭐ | ⭐ |
 <!--- advent_readme_stars table --->
 
 ## Get started
