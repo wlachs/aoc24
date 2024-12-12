@@ -11,50 +11,68 @@ import (
 // regionKey is an alias for int32, just to make the code more readable
 type regionKey = int32
 
-// regionData contains the area and perimeter of a fields
+// regionData contains the area and perimeter / sides of a field
 type regionData struct {
-	area      uint64
-	perimeter uint64
+	area             uint64
+	perimeterOrSides uint64
+}
+
+// fieldAndOrientation contains a pair of vectors indicating position and facing
+type fieldAndOrientation struct {
+	field       types.Vec2
+	orientation types.Vec2
 }
 
 // regionCtx holds the calculation context
 type regionCtx struct {
-	fields    []types.Vec2
-	perimeter uint64
+	fields                []types.Vec2
+	fieldsWithOrientation []fieldAndOrientation
+	perimeterOrSides      uint64
 }
 
-// calculate calculates the area and perimeter of each regionData
-func calculate(m map[types.Vec2]regionKey) []regionData {
+// calculate calculates the area and perimeter of each region
+func calculate(m map[types.Vec2]regionKey, sides bool) []regionData {
 	var res []regionData
-	regions := map[regionKey][][]types.Vec2{}
 	processed := make([]types.Vec2, 0, len(m))
 	for pos, key := range m {
 		if slices.Contains(processed, pos) {
 			continue
 		}
 		var ctx regionCtx
-		find(m, pos, key, &ctx)
-		if _, ok := regions[key]; !ok {
-			regions[key] = [][]types.Vec2{}
-		}
-		regions[key] = append(regions[key], ctx.fields)
+		find(m, pos, pos, key, &ctx, sides)
 		processed = append(processed, ctx.fields...)
-		res = append(res, regionData{uint64(len(ctx.fields)), ctx.perimeter})
+		res = append(res, regionData{uint64(len(ctx.fields)), ctx.perimeterOrSides})
 	}
 	return res
 }
 
-// find executes a recursive search starting from pos in m and fills the fields with similarly marked neighbouring coordinates
-func find(m map[types.Vec2]regionKey, pos types.Vec2, key regionKey, ctx *regionCtx) {
+// find executes a recursive search starting from pos in m and fills the fields with similarly marked neighbouring coordinates.
+// If the sides property is set then instead of the perimeter, the number of sides is calculated
+func find(m map[types.Vec2]regionKey, prev, pos types.Vec2, key regionKey, ctx *regionCtx, sides bool) {
 	if m[pos] != key {
-		ctx.perimeter++
+		if !sides {
+			ctx.perimeterOrSides++
+			return
+		}
+		dir := pos.Subtract(&prev)
+		if !slices.Contains(ctx.fieldsWithOrientation, fieldAndOrientation{prev, dir}) {
+			ctx.perimeterOrSides++
+			leftDir := dir.RotateLeft()
+			rightDir := dir.RotateRight()
+			for pIn, pOut := prev, pos; m[pIn] == key && m[pOut] != key; pIn, pOut = pIn.Add(&leftDir), pOut.Add(&leftDir) {
+				ctx.fieldsWithOrientation = append(ctx.fieldsWithOrientation, fieldAndOrientation{pIn, dir})
+			}
+			for pIn, pOut := prev.Add(&rightDir), pos.Add(&rightDir); m[pIn] == key && m[pOut] != key; pIn, pOut = pIn.Add(&rightDir), pOut.Add(&rightDir) {
+				ctx.fieldsWithOrientation = append(ctx.fieldsWithOrientation, fieldAndOrientation{pIn, dir})
+			}
+		}
 		return
 	} else if slices.Contains(ctx.fields, pos) {
 		return
 	}
 	ctx.fields = append(ctx.fields, pos)
 	for _, nextPos := range pos.Around() {
-		find(m, nextPos, key, ctx)
+		find(m, pos, nextPos, key, ctx, sides)
 	}
 }
 
@@ -72,13 +90,18 @@ func Run(input []string, mode int) {
 func Part1(input []string) string {
 	m := utils.ParseInputToMap(input)
 	sum := uint64(0)
-	for _, r := range calculate(m) {
-		sum += r.area * r.perimeter
+	for _, r := range calculate(m, false) {
+		sum += r.area * r.perimeterOrSides
 	}
 	return strconv.FormatUint(sum, 10)
 }
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	m := utils.ParseInputToMap(input)
+	sum := uint64(0)
+	for _, r := range calculate(m, true) {
+		sum += r.area * r.perimeterOrSides
+	}
+	return strconv.FormatUint(sum, 10)
 }
