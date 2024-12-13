@@ -14,7 +14,7 @@ type scenario struct {
 }
 
 // parseInput receives the input and creates a scenario slice from it
-func parseInput(input []string) []scenario {
+func parseInput(input []string, advanced bool) []scenario {
 	res := make([]scenario, 0, (len(input)+1)/4)
 	cur := scenario{}
 	re := regexp.MustCompile(".*X=?(?P<X>.*), Y=?(?P<Y>.*)")
@@ -26,7 +26,11 @@ func parseInput(input []string) []scenario {
 		case 1:
 			cur.B = types.Vec2{X: utils.Atoi(match[1]), Y: utils.Atoi(match[2])}
 		case 2:
-			cur.X = types.Vec2{X: utils.Atoi(match[1]), Y: utils.Atoi(match[2])}
+			if advanced {
+				cur.X = types.Vec2{X: utils.Atoi(match[1]) + 10000000000000, Y: utils.Atoi(match[2]) + 10000000000000}
+			} else {
+				cur.X = types.Vec2{X: utils.Atoi(match[1]), Y: utils.Atoi(match[2])}
+			}
 			res = append(res, cur)
 		}
 	}
@@ -34,15 +38,11 @@ func parseInput(input []string) []scenario {
 }
 
 // minCost calculates the minimum cost of tickets required to get the price if possible
-func minCost(s scenario) int {
-	for b := range 100 {
-		for a := range 100 {
-			posA := s.A.Multiply(a)
-			posB := s.B.Multiply(b)
-			if posA.Add(&posB) == s.X {
-				return 3*a + b
-			}
-		}
+func minCost(s scenario) uint64 {
+	a := float64(s.X.X*s.B.Y-s.X.Y*s.B.X) / float64(s.A.X*s.B.Y-s.A.Y*s.B.X)
+	b := float64(s.X.Y*s.A.X-s.X.X*s.A.Y) / float64(s.A.X*s.B.Y-s.A.Y*s.B.X)
+	if a == float64(uint64(a)) && b == float64(uint64(b)) {
+		return 3*uint64(a) + uint64(b)
 	}
 	return 0
 }
@@ -59,15 +59,20 @@ func Run(input []string, mode int) {
 
 // Part1 solves the first part of the exercise
 func Part1(input []string) string {
-	scenarios := parseInput(input)
-	cost := 0
+	scenarios := parseInput(input, false)
+	cost := uint64(0)
 	for _, s := range scenarios {
 		cost += minCost(s)
 	}
-	return strconv.Itoa(cost)
+	return strconv.FormatUint(cost, 10)
 }
 
 // Part2 solves the second part of the exercise
 func Part2(input []string) string {
-	return ""
+	scenarios := parseInput(input, true)
+	cost := uint64(0)
+	for _, s := range scenarios {
+		cost += minCost(s)
+	}
+	return strconv.FormatUint(cost, 10)
 }
