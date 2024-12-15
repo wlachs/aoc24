@@ -7,3 +7,8 @@ func Abs(x int) int {
 	}
 	return x
 }
+
+// Mod is a Python-like implementation of the modulo function
+func Mod(a, b int) int {
+	return (a%b + b) % b
+}
