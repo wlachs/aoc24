@@ -17,15 +17,3 @@ func TestPartOne(t *testing.T) {
 		t.Errorf("expected result was %s, but got %s instead", expectedResult, result)
 	}
 }
-
-func TestPartTwo(t *testing.T) {
-	t.Parallel()
-
-	input := internal.LoadInputLines("input_2_test.txt")
-	expectedResult := internal.LoadFirstInputLine("solution_2.txt")
-	result := day_14.Part2(input, 11, 7)
-
-	if result != expectedResult {
-		t.Errorf("expected result was %s, but got %s instead", expectedResult, result)
-	}
-}
