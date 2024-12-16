@@ -35,31 +35,22 @@ func end(m map[types.Vec2]int32) types.Vec2 {
 
 // ways calculates the cost to travel from the starting node to every reachable node of the map
 func ways(m map[types.Vec2]int32) map[vecDir]int {
-	valid := func(vec types.Vec2) bool {
-		return m[vec] != '#'
-	}
 	s := vecDir{start(m), types.Vec2{X: 1}}
 	r := map[vecDir]int{}
 	r[s] = 0
 	visit := []vecDir{s}
+	add := func(cur, next vecDir, cost int) {
+		if n, ok := r[next]; m[next.vec] != '#' && (!ok || r[cur]+cost < n) {
+			r[next] = r[cur] + cost
+			visit = append(visit, next)
+		}
+	}
 	for len(visit) > 0 {
 		cur := visit[0]
 		visit = visit[1:]
-		next := vecDir{cur.vec.Add(&cur.dir), cur.dir}
-		left := vecDir{cur.vec, cur.dir.RotateLeft()}
-		right := vecDir{cur.vec, cur.dir.RotateRight()}
-		if n, ok := r[next]; valid(next.vec) && (!ok || r[cur]+1 < n) {
-			r[next] = r[cur] + 1
-			visit = append(visit, next)
-		}
-		if n, ok := r[left]; !ok || r[cur]+1000 < n {
-			r[left] = r[cur] + 1000
-			visit = append(visit, left)
-		}
-		if n, ok := r[right]; !ok || r[cur]+1000 < n {
-			r[right] = r[cur] + 1000
-			visit = append(visit, right)
-		}
+		add(cur, vecDir{cur.vec.Add(&cur.dir), cur.dir}, 1)
+		add(cur, vecDir{cur.vec, cur.dir.RotateLeft()}, 1000)
+		add(cur, vecDir{cur.vec, cur.dir.RotateRight()}, 1000)
 	}
 	return r
 }
