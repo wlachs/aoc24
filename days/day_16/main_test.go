@@ -30,11 +30,23 @@ func TestPartOneB(t *testing.T) {
 	}
 }
 
-func TestPartTwo(t *testing.T) {
+func TestPartTwoA(t *testing.T) {
 	t.Parallel()
 
-	input := internal.LoadInputLines("input_2_test.txt")
-	expectedResult := internal.LoadFirstInputLine("solution_2.txt")
+	input := internal.LoadInputLines("input_2a_test.txt")
+	expectedResult := internal.LoadFirstInputLine("solution_2a.txt")
+	result := day_16.Part2(input)
+
+	if result != expectedResult {
+		t.Errorf("expected result was %s, but got %s instead", expectedResult, result)
+	}
+}
+
+func TestPartTwoB(t *testing.T) {
+	t.Parallel()
+
+	input := internal.LoadInputLines("input_2b_test.txt")
+	expectedResult := internal.LoadFirstInputLine("solution_2b.txt")
 	result := day_16.Part2(input)
 
 	if result != expectedResult {
