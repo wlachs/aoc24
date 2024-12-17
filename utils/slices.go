@@ -11,6 +11,15 @@ func ToIntSlice(numbers []string) []int {
 	return s
 }
 
+// ToUInt8Slice converts a string slice to an uint8 slice
+func ToUInt8Slice(numbers []string) []uint8 {
+	s := make([]uint8, len(numbers))
+	for i, u := range ToUInt64Slice(numbers) {
+		s[i] = uint8(u)
+	}
+	return s
+}
+
 // ToUInt64Slice converts a string slice to an uint64 slice
 func ToUInt64Slice(numbers []string) []uint64 {
 	s := make([]uint64, 0, len(numbers))
