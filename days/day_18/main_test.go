@@ -11,7 +11,7 @@ func TestPartOne(t *testing.T) {
 
 	input := internal.LoadInputLines("input_1_test.txt")
 	expectedResult := internal.LoadFirstInputLine("solution_1.txt")
-	result := day_18.Part1(input)
+	result := day_18.Part1(input, 7, 12)
 
 	if result != expectedResult {
 		t.Errorf("expected result was %s, but got %s instead", expectedResult, result)
