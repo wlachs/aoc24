@@ -11,6 +11,15 @@ func ToIntSlice(numbers []string) []int {
 	return s
 }
 
+// ToUInt8Slice converts a string slice to an uint8 slice
+func ToUInt8Slice(numbers []string) []uint8 {
+	s := make([]uint8, len(numbers))
+	for i, u := range ToUInt64Slice(numbers) {
+		s[i] = uint8(u)
+	}
+	return s
+}
+
 // ToUInt64Slice converts a string slice to an uint64 slice
 func ToUInt64Slice(numbers []string) []uint64 {
 	s := make([]uint64, 0, len(numbers))
@@ -38,4 +47,30 @@ func ToStringSlice(numbers []int) []string {
 		s = append(s, strconv.Itoa(number))
 	}
 	return s
+}
+
+// EqualsUInt8Slice compares two uint8 slices
+func EqualsUInt8Slice(a, b []uint8) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// PrefixUInt8Slice checks if slice b is a prefix of slice a
+func PrefixUInt8Slice(a, b []uint8) bool {
+	if len(a) < len(b) {
+		return false
+	}
+	for i := range b {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }
