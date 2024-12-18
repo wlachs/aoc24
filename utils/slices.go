@@ -48,3 +48,29 @@ func ToStringSlice(numbers []int) []string {
 	}
 	return s
 }
+
+// EqualsUInt8Slice compares two uint8 slices
+func EqualsUInt8Slice(a, b []uint8) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// PrefixUInt8Slice checks if slice b is a prefix of slice a
+func PrefixUInt8Slice(a, b []uint8) bool {
+	if len(a) < len(b) {
+		return false
+	}
+	for i := range b {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}

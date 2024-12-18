@@ -12,12 +12,3 @@ func Abs(x int) int {
 func Mod(a, b int) int {
 	return (a%b + b) % b
 }
-
-// Pow is a purely int-based pow function
-func Pow(a, b int) int {
-	r := 1
-	for range b {
-		r *= a
-	}
-	return r
-}
