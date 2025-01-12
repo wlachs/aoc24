@@ -8,9 +8,19 @@ import (
 	"strconv"
 )
 
-// key is a vector pair to be used for the Floyd-Warshall algorithm
-type key struct {
-	v1, v2 types.Vec2
+// f implements the counter logic to find out how many different ways are available to cheat in the puzzle
+func f(m map[types.Vec2]int32, distance, threshold int) int {
+	p := dijkstra(m, s(m), e(m))
+	count := 0
+	for i, start := range p {
+		for j, end := range p[i:] {
+			wallPath := utils.Abs(end.X-start.X) + utils.Abs(end.Y-start.Y)
+			if wallPath <= distance && j-wallPath >= threshold {
+				count++
+			}
+		}
+	}
+	return count
 }
 
 // s finds the start position in the map
@@ -49,74 +59,6 @@ func dijkstra(m map[types.Vec2]int32, start, end types.Vec2) []types.Vec2 {
 	panic("no path found")
 }
 
-// wallDijkstra finds the shortest paths starting from a given source
-func wallDijkstra(m map[types.Vec2]int32, start types.Vec2) map[types.Vec2]int {
-	costMap := map[types.Vec2]int{}
-	for vec2 := range m {
-		costMap[vec2] = math.MaxInt
-	}
-	costMap[start] = 0
-	visit := []types.Vec2{start}
-	for len(visit) > 0 {
-		h := visit[0]
-		visit = visit[1:]
-		for _, next := range h.Around() {
-			if _, ok := m[next]; ok && costMap[h]+1 < costMap[next] {
-				costMap[next] = costMap[h] + 1
-				visit = append(visit, next)
-			}
-		}
-	}
-	return costMap
-}
-
-// vecToNode converts a vector to a graph node
-func vecToNode(vec types.Vec2, size int) int {
-	return vec.X*size + vec.Y
-}
-
-// areNeighbors checks whether two nodes are neighbors in the graph
-func areNeighbors(i, j, size int) bool {
-	for _, n := range neighbors(i, size) {
-		if n == j {
-			return true
-		}
-	}
-	return false
-}
-
-// neighbors returns the direct neighbors of a graph node
-func neighbors(n, size int) []int {
-	res := make([]int, 0, 4)
-	if n%size != 0 {
-		res = append(res, n-1)
-	}
-	if n%size != size-1 {
-		res = append(res, n+1)
-	}
-	if n > size {
-		res = append(res, n-size)
-	}
-	if n < (size-1)*size {
-		res = append(res, n+size)
-	}
-	return res
-}
-
-// notBothOnPath makes sure that the two given characters are not both path characters i.e. either '.', 'S' or 'E'
-func notBothOnPath(pathFields []int, f1, f2 int) bool {
-	c := 0
-	for _, field := range pathFields {
-		if field == f1 || field == f2 {
-			c++
-			if c == 2 {
-				return false
-			}
-		}
-	}
-	return true
-}
-
 // path finds one of the shortest paths on the map from the start to the end position
 func path(costMap map[types.Vec2]int, start types.Vec2, end types.Vec2) []types.Vec2 {
 	cur := end
@@ -145,34 +87,11 @@ func Run(input []string, mode int) {
 // Part1 solves the first part of the exercise
 func Part1(input []string, threshold int) string {
 	m := utils.ParseInputToMap(input)
-	p := dijkstra(m, s(m), e(m))
-	count := 0
-	for i, start := range p[:len(p)-5] {
-		for j, end := range p[i+4:] {
-			d := start.Subtract(&end)
-			if d.X*d.Y == 0 && utils.Abs(d.X+d.Y) == 2 && j+2 >= threshold {
-				count++
-			}
-		}
-	}
-	return strconv.Itoa(count)
+	return strconv.Itoa(f(m, 2, threshold))
 }
 
 // Part2 solves the second part of the exercise
 func Part2(input []string, threshold int) string {
 	m := utils.ParseInputToMap(input)
-	p := dijkstra(m, s(m), e(m))
-	count := 0
-	size := len(p)
-	for i, start := range p {
-		d := wallDijkstra(m, start)
-		for j, end := range p[i:] {
-			wallPath := d[end]
-			if wallPath <= 20 && j-wallPath >= threshold {
-				count++
-			}
-		}
-		fmt.Println(i, float64(i)/float64(size)*100, count)
-	}
-	return strconv.Itoa(count)
+	return strconv.Itoa(f(m, 20, threshold))
 }
