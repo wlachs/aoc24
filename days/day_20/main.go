@@ -70,46 +70,6 @@ func wallDijkstra(m map[types.Vec2]int32, start types.Vec2) map[types.Vec2]int {
 	return costMap
 }
 
-// allDijkstra runs the Dijkstra algorithm on each node of the graph
-func allDijkstra(m map[types.Vec2]int32, size int) [][]int {
-	var pathFields []int
-	for vec2, c := range m {
-		if c == '.' || c == 'S' || c == 'E' {
-			pathFields = append(pathFields, vecToNode(vec2, size))
-		}
-	}
-	nodes := len(m)
-	dist := make([][]int, nodes)
-	for i := range nodes {
-		dist[i] = make([]int, nodes)
-		for j := range nodes {
-			if i == j {
-				dist[i][j] = 0
-			} else if areNeighbors(i, j, size) && notBothOnPath(pathFields, i, j) {
-				dist[i][j] = 1
-			} else {
-				dist[i][j] = 21
-			}
-		}
-	}
-	for source := range nodes {
-		q := make([]int, nodes)
-		for v := range nodes {
-			q = append(q, v)
-		}
-		for len(q) > 0 {
-			u := q[0]
-			q = q[1:]
-			for _, v := range neighbors(u, size) {
-				if dist[u][v] == 1 && dist[source][u]+1 < dist[source][v] {
-					dist[source][v] = dist[source][u] + 1
-				}
-			}
-		}
-	}
-	return dist
-}
-
 // vecToNode converts a vector to a graph node
 func vecToNode(vec types.Vec2, size int) int {
 	return vec.X*size + vec.Y
@@ -175,22 +135,22 @@ func path(costMap map[types.Vec2]int, start types.Vec2, end types.Vec2) []types.
 // Run function of the daily challenge
 func Run(input []string, mode int) {
 	if mode == 1 || mode == 3 {
-		fmt.Printf("Part one: %v\n", Part1(input))
+		fmt.Printf("Part one: %v\n", Part1(input, 100))
 	}
 	if mode == 2 || mode == 3 {
-		fmt.Printf("Part two: %v\n", Part2(input))
+		fmt.Printf("Part two: %v\n", Part2(input, 100))
 	}
 }
 
 // Part1 solves the first part of the exercise
-func Part1(input []string) string {
+func Part1(input []string, threshold int) string {
 	m := utils.ParseInputToMap(input)
 	p := dijkstra(m, s(m), e(m))
 	count := 0
 	for i, start := range p[:len(p)-5] {
 		for j, end := range p[i+4:] {
 			d := start.Subtract(&end)
-			if d.X*d.Y == 0 && utils.Abs(d.X+d.Y) == 2 && j+2 >= 20 {
+			if d.X*d.Y == 0 && utils.Abs(d.X+d.Y) == 2 && j+2 >= threshold {
 				count++
 			}
 		}
@@ -199,7 +159,7 @@ func Part1(input []string) string {
 }
 
 // Part2 solves the second part of the exercise
-func Part2(input []string) string {
+func Part2(input []string, threshold int) string {
 	m := utils.ParseInputToMap(input)
 	p := dijkstra(m, s(m), e(m))
 	count := 0
@@ -208,7 +168,7 @@ func Part2(input []string) string {
 		d := wallDijkstra(m, start)
 		for j, end := range p[i:] {
 			wallPath := d[end]
-			if wallPath <= 20 && j-wallPath >= 100 {
+			if wallPath <= 20 && j-wallPath >= threshold {
 				count++
 			}
 		}
